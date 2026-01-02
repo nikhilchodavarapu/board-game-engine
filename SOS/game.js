@@ -57,6 +57,14 @@ const displayBoard = (board) => {
   );
 };
 
+const isAnythingInvalid = (board, positions) => {
+  for (let i = 0; i < positions.length; i++) {
+    const [x, y] = positions[i];
+    if (!(board[x] && board[x][y])) return true;
+  }
+  return false;
+};
+
 const countPoints = (board, position) => {
   const adjacentIndices = [
     [0, -1],
@@ -89,12 +97,12 @@ const countPoints = (board, position) => {
       oneMoreToAdjacent[i].map((x, i) => x + position[i]),
     );
     const [x, y] = positionInBoard(position);
+    if (isAnythingInvalid(board, [[x1, y1], [x, y], [x2, y2]])) continue;
     const possibleCombinations = permutations([
       board[x1][y1],
       board[x][y],
       board[x2][y2],
     ]).map((x) => x.join(""));
-    console.log(possibleCombinations);
     if (possibleCombinations.indexOf("SOS") !== -1) count++;
   }
   return count;
@@ -105,11 +113,14 @@ const makeMove = (player) => {
   const [row, col] = positionInBoard(position);
   board[row][col] = symbol;
   displayBoard(board);
-  console.log(countPoints(board, position));
+  player.score += countPoints(board, position);
 };
 
 export const play = (players) => {
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 225; i++) {
     makeMove(players[i % 2]);
+    players.forEach((player) => {
+      player.displayScore();
+    });
   }
 };
