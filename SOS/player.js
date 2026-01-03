@@ -5,6 +5,6 @@ export class Player {
   }
 
   displayScore() {
-    console.log(`${this.name} : ${this.score}`);
+    console.log(`${this.name} : ${this.score} points\n`);
   }
 }

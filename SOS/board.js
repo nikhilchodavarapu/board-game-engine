@@ -1,12 +1,11 @@
-export function createBoard() {
-  const topLine = "_".repeat(90) + "\n";
-  const middleLine =
-    `|     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
-|     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |
-|_____|_____|_____|_____|_____|_____|_____|_____|_____|_____|_____|_____|_____|_____|_____|\n`;
+export function createBoard(size) {
+  const topLine = "_".repeat(6 * size) + "\n";
+  const midLine = "|" + "     |".repeat(size) + "\n";
+  const bottomLine = "|" + "_____|".repeat(size) + "\n";
+  const middleLine = midLine + midLine + bottomLine;
 
   let template = topLine;
-  for (let index = 0; index < 15; index++) {
+  for (let index = 0; index < size; index++) {
     template += middleLine;
   }
   template = template.trimEnd();
