@@ -2,6 +2,7 @@ import { createBoard } from "./board.js";
 import { roll } from "./dice.js";
 import { BLUE_PATH, GREEN_PATH, RED_PATH, YELLOW_PATH } from "./paths.js";
 import { namePlayers } from "./players.js";
+import { positions } from "./positions.js";
 import { renderBoard } from "./render.js";
 
 const board = createBoard(15);
@@ -15,36 +16,6 @@ const BLUE_COIN_MOVES = [-1, -1, -1, -1];
 const RED_COIN_MOVES = [-1, -1, -1, -1];
 const GREEN_COIN_MOVES = [-1, -1, -1, -1];
 const YELLOW_COIN_MOVES = [-1, -1, -1, -1];
-
-const positions = {
-  redCoins: {
-    0: { original: [8, 15], visible: [3, 3] },
-    1: { original: [8, 21], visible: [3, 4] },
-    2: { original: [11, 15], visible: [4, 3] },
-    3: { original: [11, 21], visible: [4, 4] },
-  },
-
-  blueCoins: {
-    0: { original: [8, 69], visible: [3, 12] },
-    1: { original: [8, 75], visible: [3, 13] },
-    2: { original: [11, 69], visible: [4, 12] },
-    3: { original: [11, 75], visible: [4, 13] },
-  },
-
-  yellowCoins: {
-    0: { original: [35, 69], visible: [12, 3] },
-    1: { original: [35, 75], visible: [12, 4] },
-    2: { original: [38, 69], visible: [13, 3] },
-    3: { original: [38, 75], visible: [13, 4] },
-  },
-
-  greenCoins: {
-    0: { original: [35, 15], visible: [12, 12] },
-    1: { original: [35, 21], visible: [12, 13] },
-    2: { original: [38, 15], visible: [13, 12] },
-    3: { original: [38, 21], visible: [13, 13] },
-  },
-};
 
 function isInSafeJone() {
   if (
@@ -77,19 +48,29 @@ const initialize = () => {
   }
 };
 
-function displayBoard(path, coin, color) {
+function displayBoard() {
   console.clear();
   initialize();
-  const path_row = path[0];
-  const path_col = path[1];
   const resetColour = "\x1b[0m";
   let string = "";
+  const allPos = Object.values(positions).flatMap((x) =>
+    Object.values(x).map((x) => ({ [x.original]: x.color + " " + x.symbol }))
+  ).reduce((pos, x) => {
+    pos[Object.keys(x) + ""] = Object.values(x) + "";
+    return pos;
+  }, {});
   for (let row = 0; row < board.length; row++) {
     for (let col = 0; col < board[row].length; col++) {
       const currentElemnt = board[row][col];
-      if (row === path_row && col === path_col) {
-        string += color + coin + resetColour;
-      } else string += renderBoard(row, col) + currentElemnt + resetColour;
+      const key = row + "," + col;
+      // console.log(key);
+      if (allPos[key]) {
+        const [color, symbol] = allPos[key].split(" ");
+        // console.log({color});
+        string += renderBoard(row, col) + color + symbol + resetColour;
+      } else {
+        string += renderBoard(row, col) + currentElemnt + resetColour;
+      }
     }
     string += "\n";
   }
@@ -133,9 +114,7 @@ function selectCoinMoves(player) {
   }
 }
 
-function main() {
-  const players = namePlayers();
-  play(players.map((x) => x.name));
-}
 
-main();
+export const play = () => {
+  displayBoard();
+};
