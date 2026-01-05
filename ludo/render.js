@@ -5,7 +5,7 @@ const BG = {
   blue: "\x1b[46m",
 };
 
-export const renderBoard = (row, col) => {
+const renderBoard = (row, col) => {
   if (row === 0) return "\x1b[30m";
 
   if (row > 18 && row < 28 && col > 36 && col < 55) {
@@ -54,4 +54,24 @@ export const renderBoard = (row, col) => {
   }
 
   return "\x1b[30m" + "\x1b[107m";
+};
+
+export const displayBoard = (board, positions) => {
+  console.clear();
+  const resetColour = "\x1b[0m";
+  let string = "";
+  for (let row = 0; row < board.length; row++) {
+    for (let col = 0; col < board[row].length; col++) {
+      const currentElemnt = board[row][col];
+      const key = row + "," + col;
+      if (positions[key]) {
+        const [color, symbol] = positions[key].split(" ");
+        string += renderBoard(row, col) + color + symbol + resetColour;
+      } else {
+        string += renderBoard(row, col) + currentElemnt + resetColour;
+      }
+    }
+    string += "\n";
+  }
+  console.log(string);
 };

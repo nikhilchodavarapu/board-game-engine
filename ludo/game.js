@@ -2,20 +2,20 @@ import { createBoard } from "./board.js";
 import { roll } from "./dice.js";
 import { BLUE_PATH, GREEN_PATH, RED_PATH, YELLOW_PATH } from "./paths.js";
 import { namePlayers } from "./players.js";
-import { positions } from "./positions.js";
-import { renderBoard } from "./render.js";
+import { displayBoard } from "./render.js";
+// import { renderBoard } from "./render.js";
 
 const board = createBoard(15);
 
-const BLUE_COINS = [1, 2, 3, 4];
-const RED_COINS = [1, 2, 3, 4];
-const GREEN_COINS = [1, 2, 3, 4];
-const YELLOW_COINS = [1, 2, 3, 4];
+const BLUE_TOKENS = [1, 2, 3, 4];
+const RED_TOKENS = [1, 2, 3, 4];
+const GREEN_TOKENS = [1, 2, 3, 4];
+const YELLOW_TOKENS = [1, 2, 3, 4];
 
-const BLUE_COIN_MOVES = [-1, -1, -1, -1];
-const RED_COIN_MOVES = [-1, -1, -1, -1];
-const GREEN_COIN_MOVES = [-1, -1, -1, -1];
-const YELLOW_COIN_MOVES = [-1, -1, -1, -1];
+const BLUE_TOKEN_MOVES = [-1, -1, -1, -1];
+const RED_TOKEN_MOVES = [-1, -1, -1, -1];
+const GREEN_TOKEN_MOVES = [-1, -1, -1, -1];
+const YELLOW_TOKEN_MOVES = [-1, -1, -1, -1];
 
 function isInSafeJone() {
   if (
@@ -39,43 +39,22 @@ function isInSafeJone() {
   return false;
 }
 
-const initialize = () => {
-  for (const key in positions) {
-    for (const coin in positions[key]) {
-      const [row, col] = positions[key][coin].original;
-      board[row][col] = coin;
-    }
-  }
+const getCurrentPositions = (players) => {
+  return players.flatMap((x) => Object.values(x.tokens)).reduce(
+    (pos, x) => (pos[x.originalPos + ""] = x.color + " " + x.symbol) && pos,
+    {},
+  );
 };
 
-function displayBoard() {
-  console.clear();
-  initialize();
-  const resetColour = "\x1b[0m";
-  let string = "";
-  const allPos = Object.values(positions).flatMap((x) =>
-    Object.values(x).map((x) => ({ [x.original]: x.color + " " + x.symbol }))
-  ).reduce((pos, x) => {
-    pos[Object.keys(x) + ""] = Object.values(x) + "";
-    return pos;
-  }, {});
-  for (let row = 0; row < board.length; row++) {
-    for (let col = 0; col < board[row].length; col++) {
-      const currentElemnt = board[row][col];
-      const key = row + "," + col;
-      // console.log(key);
-      if (allPos[key]) {
-        const [color, symbol] = allPos[key].split(" ");
-        // console.log({color});
-        string += renderBoard(row, col) + color + symbol + resetColour;
-      } else {
-        string += renderBoard(row, col) + currentElemnt + resetColour;
-      }
-    }
-    string += "\n";
-  }
-  console.log(string);
-}
+const initialize = (players) => {
+  const positions = getCurrentPositions(players);
+  Object.keys(positions).forEach((pos) => {
+    const [row, col] = pos.split(",");
+    const symbol = positions[pos].split(" ")[1];
+    board[row][col] = symbol;
+  });
+  displayBoard(board, positions);
+};
 
 function findEmptyPlace(row, col) {
   if (board[row][col] === " ") {
@@ -101,20 +80,23 @@ function findEmptyPlace(row, col) {
   return [row + 1, col];
 }
 
-function selectCoinMoves(player) {
+function selectTokenMoves(player) {
   switch (player) {
     case 1:
-      return BLUE_COIN_MOVES;
+      return BLUE_TOKEN_MOVES;
     case 2:
-      return RED_COIN_MOVES;
+      return RED_TOKEN_MOVES;
     case 3:
-      return GREEN_COIN_MOVES;
+      return GREEN_TOKEN_MOVES;
     case 4:
-      return YELLOW_COIN_MOVES;
+      return YELLOW_TOKEN_MOVES;
   }
 }
 
+const moveToken = () => {
+  
+}
 
-export const play = () => {
-  displayBoard();
+export const play = (players) => {
+  initialize(players);
 };
