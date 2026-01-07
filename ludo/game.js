@@ -1,16 +1,11 @@
 import { createBoard } from "./board.js";
 import { roll } from "./dice.js";
-import { BLUE_PATH, GREEN_PATH, RED_PATH, YELLOW_PATH } from "./paths.js";
+import { PATH } from "./path.js";
 import { namePlayers } from "./players.js";
 import { displayBoard } from "./render.js";
 // import { renderBoard } from "./render.js";
 
 const board = createBoard(15);
-
-const BLUE_TOKENS = [1, 2, 3, 4];
-const RED_TOKENS = [1, 2, 3, 4];
-const GREEN_TOKENS = [1, 2, 3, 4];
-const YELLOW_TOKENS = [1, 2, 3, 4];
 
 function isInSafeJone() {
   if (
@@ -83,25 +78,52 @@ const positionInBoard = (position) => {
   return [row, col];
 };
 
-const changeTokenPosInBoard = (board, player, tokenNo, newPos) => {
+const changeTokenPosInBoard = (player, tokenNo, newPos) => {
   const [x, y] = player.tokens[tokenNo].originalPos;
   board[x][y] = " ";
   const [row, col] = positionInBoard(newPos);
   player.tokens[tokenNo].originalPos = [row, col];
   console.log(newPos);
   board[row][col] = player.tokens[tokenNo].symbol;
+  player.tokens[tokenNo].moves++;
 };
 
-const moveToken = (board, player, tokenNo, noOfMoves) => {
-  if (!player.tokens[tokenNo].moves) {
-    changeTokenPosInBoard(board, player, tokenNo, player.initialPos);
+const moveToken = (player, tokenNo, noOfMoves, players) => {
+  // if ()
+
+  let i = 0;
+  return new Promise((r) => {
+    const intervalId = setInterval(() => {
+      changeTokenPosInBoard(
+        player,
+        tokenNo,
+        PATH[player.tokens[tokenNo].pathIndex++],
+      );
+      displayBoard(board, getCurrentPositions(players));
+      i++;
+      if (i === noOfMoves) {
+        clearInterval(intervalId);
+        r();
+      }
+    }, 500);
+  });
+  // }
+};
+
+const rollDice = async (players, player) => {
+  // const noOfMoves = await roll(board, getCurrentPositions(players));
+  const noOfMoves = +prompt("Enter :");
+  console.log("Outcome =>", noOfMoves);
+  const tokenNo = prompt("Enter the token No (1:● 2:⬟ 3:▲ 4:■) : ");
+  if (noOfMoves === 6 && player.tokens[tokenNo].moves === 1) {
+    await moveToken(player, tokenNo, 1, players);
+  } else {
+    await moveToken(player, tokenNo, +noOfMoves, players);
   }
 };
 
-export const play = (players) => {
+export const play = async (players) => {
   initialize(players);
-  moveToken(board, players[0], 4, 5);
-  setTimeout(() => {
-    displayBoard(board, getCurrentPositions(players));
-  }, 1000);
+  rollDice(players, players[0]);
+  rollDice(players, players[0]);
 };

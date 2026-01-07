@@ -1,10 +1,13 @@
+import { PATH } from "./path.js";
+
 class Token {
-  constructor(originalPos, visblePos, color, symbol, moves) {
+  constructor(originalPos, visblePos, color, symbol, moves, pathIndex) {
     this.color = color;
     this.originalPos = originalPos;
     this.visblePos = visblePos;
     this.symbol = symbol;
     this.moves = moves;
+    this.pathIndex = pathIndex;
   }
 }
 
@@ -15,32 +18,42 @@ const FGColors = {
   blue: "\x1b[34m",
 };
 
+const startIndexInPath = (initialPos) => {
+  const [row, col] = initialPos;
+  return PATH.findIndex(([x, y]) => x === row && y === col);
+};
+
+const redPathIndex = startIndexInPath([7, 2]);
+const greenPathIndex = startIndexInPath([2, 9]);
+const yellowPathIndex = startIndexInPath([9, 14]);
+const bluePathIndex = startIndexInPath([14, 7]);
+
 const redTokens = {
-  1: new Token([8, 15], [3, 3], FGColors.red, "●", 0),
-  2: new Token([8, 21], [3, 4], FGColors.red, "⬟", 0),
-  3: new Token([11, 15], [4, 3], FGColors.red, "▲", 0),
-  4: new Token([11, 21], [4, 4], FGColors.red, "■", 0),
+  1: new Token([8, 15], [3, 3], FGColors.red, "●", 1, redPathIndex),
+  2: new Token([8, 21], [3, 4], FGColors.red, "⬟", 1, redPathIndex),
+  3: new Token([11, 15], [4, 3], FGColors.red, "▲", 1, redPathIndex),
+  4: new Token([11, 21], [4, 4], FGColors.red, "■", 1, redPathIndex),
 };
 
 const greenTokens = {
-  1: new Token([8, 69], [3, 12], FGColors.green, "●", 0),
-  2: new Token([8, 75], [3, 13], FGColors.green, "⬟", 0),
-  3: new Token([11, 69], [4, 12], FGColors.green, "▲", 0),
-  4: new Token([11, 75], [4, 13], FGColors.green, "■", 0),
+  1: new Token([8, 69], [3, 12], FGColors.green, "●", 1, greenPathIndex),
+  2: new Token([8, 75], [3, 13], FGColors.green, "⬟", 1, greenPathIndex),
+  3: new Token([11, 69], [4, 12], FGColors.green, "▲", 1, greenPathIndex),
+  4: new Token([11, 75], [4, 13], FGColors.green, "■", 1, greenPathIndex),
 };
 
 const yellowTokens = {
-  1: new Token([35, 69], [12, 12], FGColors.yellow, "●", 0),
-  2: new Token([35, 75], [12, 13], FGColors.yellow, "⬟", 0),
-  3: new Token([38, 69], [13, 12], FGColors.yellow, "▲", 0),
-  4: new Token([38, 75], [13, 13], FGColors.yellow, "■", 0),
+  1: new Token([35, 69], [12, 12], FGColors.yellow, "●", 1, yellowPathIndex),
+  2: new Token([35, 75], [12, 13], FGColors.yellow, "⬟", 1, yellowPathIndex),
+  3: new Token([38, 69], [13, 12], FGColors.yellow, "▲", 1, yellowPathIndex),
+  4: new Token([38, 75], [13, 13], FGColors.yellow, "■", 1, yellowPathIndex),
 };
 
 const blueTokens = {
-  1: new Token([35, 15], [12, 3], FGColors.blue, "●", 0),
-  2: new Token([35, 21], [12, 4], FGColors.blue, "⬟", 0),
-  3: new Token([38, 15], [13, 3], FGColors.blue, "▲", 0),
-  4: new Token([38, 21], [13, 4], FGColors.blue, "■", 0),
+  1: new Token([35, 15], [12, 3], FGColors.blue, "●", 1, bluePathIndex),
+  2: new Token([35, 21], [12, 4], FGColors.blue, "⬟", 1, bluePathIndex),
+  3: new Token([38, 15], [13, 3], FGColors.blue, "▲", 1, bluePathIndex),
+  4: new Token([38, 21], [13, 4], FGColors.blue, "■", 1, bluePathIndex),
 };
 
 let charCode = 65;
