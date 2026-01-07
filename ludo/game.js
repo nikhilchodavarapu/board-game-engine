@@ -12,11 +12,6 @@ const RED_TOKENS = [1, 2, 3, 4];
 const GREEN_TOKENS = [1, 2, 3, 4];
 const YELLOW_TOKENS = [1, 2, 3, 4];
 
-const BLUE_TOKEN_MOVES = [-1, -1, -1, -1];
-const RED_TOKEN_MOVES = [-1, -1, -1, -1];
-const GREEN_TOKEN_MOVES = [-1, -1, -1, -1];
-const YELLOW_TOKEN_MOVES = [-1, -1, -1, -1];
-
 function isInSafeJone() {
   if (
     (row > 23 && row < 28 && col > 11 && col < 19) ||
@@ -80,23 +75,33 @@ function findEmptyPlace(row, col) {
   return [row + 1, col];
 }
 
-function selectTokenMoves(player) {
-  switch (player) {
-    case 1:
-      return BLUE_TOKEN_MOVES;
-    case 2:
-      return RED_TOKEN_MOVES;
-    case 3:
-      return GREEN_TOKEN_MOVES;
-    case 4:
-      return YELLOW_TOKEN_MOVES;
-  }
-}
+const positionInBoard = (position) => {
+  const [x, y] = position;
+  if (x < 1 || y < 1) return [-1, -1];
+  const row = (x - 1) * 3 + 2;
+  const col = (y - 1) * 6 + 3;
+  return [row, col];
+};
 
-const moveToken = () => {
-  
-}
+const changeTokenPosInBoard = (board, player, tokenNo, newPos) => {
+  const [x, y] = player.tokens[tokenNo].originalPos;
+  board[x][y] = " ";
+  const [row, col] = positionInBoard(newPos);
+  player.tokens[tokenNo].originalPos = [row, col];
+  console.log(newPos);
+  board[row][col] = player.tokens[tokenNo].symbol;
+};
+
+const moveToken = (board, player, tokenNo, noOfMoves) => {
+  if (!player.tokens[tokenNo].moves) {
+    changeTokenPosInBoard(board, player, tokenNo, player.initialPos);
+  }
+};
 
 export const play = (players) => {
   initialize(players);
+  moveToken(board, players[0], 4, 5);
+  setTimeout(() => {
+    displayBoard(board, getCurrentPositions(players));
+  }, 1000);
 };
