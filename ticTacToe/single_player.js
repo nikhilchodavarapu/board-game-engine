@@ -189,8 +189,12 @@ function computerMove() {
   if (!isInValidInput(5)) {
     return 5;
   }
-  if (isInValidInput(5) && computerMoves.length === 0) {
+  if ((isInValidInput(5) && computerMoves.length === 0) ||
+    (!isInValidInput(1) && computerMoves.length === 1 && isInValidInput(2))) {
     return 1;
+  }
+  if (!isInValidInput(9) && computerMoves.length === 1 && isInValidInput(8)) {
+    return 9;
   }
   let move = findTheThirdMove(computerMoves);
   if (move !== -1 && computerMoves.length > 1) {
@@ -282,4 +286,4 @@ function main() {
   console.log("\n\nHave a nice day😊🤍");
 }
 
-main(); 
+main();

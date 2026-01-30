@@ -42,7 +42,7 @@ export const roll = (board, positions) => {
   return new Promise((resolve) => {
     let randomValue = Math.floor(Math.random() * 8);
     let i = 0;
-    let time = 200;
+    let time = 100;
     const intervalId = setInterval(() => {
       // console.clear();
       randomValue = Math.floor(Math.random() * 8);

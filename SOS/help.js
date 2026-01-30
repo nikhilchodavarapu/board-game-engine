@@ -1,6 +1,6 @@
 import { bold, red } from "./colors.js";
-
-console.log(`${red(bold("🧩 Overview"))}
+export const help = () => {
+  console.log(`${red(bold("🧩 Overview"))}
 
 SOS is a classic two-player strategy game played on a square grid.
 Players take turns placing either an S or an O in empty cells.
@@ -58,3 +58,4 @@ ${red(bold("📌 Strategy Tips"))}
 
   - Blocking your opponent is as important as scoring yourself
 `);
+};

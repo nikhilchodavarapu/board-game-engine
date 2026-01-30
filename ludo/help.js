@@ -1,6 +1,6 @@
 import { bold, red } from "./colors.js";
-
-console.log(`${red(bold("🧩 Overview"))}
+export const help = () => {
+  console.log(`${red(bold("🧩 Overview"))}
 
 Ludo is a classic board game for 2–4 players.
 Each player races their four tokens from their starting area to the home at the center of the board.
@@ -67,3 +67,4 @@ ${red(bold("📌 Quick Tips"))}
   - Protect your tokens on safe spots
 
   - Capturing opponents gives you a big advantage`);
+};

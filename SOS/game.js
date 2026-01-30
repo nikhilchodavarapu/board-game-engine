@@ -166,7 +166,6 @@ export const play = (players) => {
     players.forEach((player) => {
       player.displayScore();
     });
-    console.log(i, maxMoves);
   }
 
   if (players[0].score < players[1].score) {

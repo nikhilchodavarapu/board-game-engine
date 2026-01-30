@@ -165,10 +165,10 @@ let charCode = 65;
 
 class Player {
   constructor(playerNo, colorName, tokens, initialPos, increment) {
-    // this.name = prompt(
-    //   `Enter name of the player - ${playerNo} (${colorName}) : `,
-    // );
-    this.name = String.fromCharCode(charCode++);
+    this.name = prompt(
+      `Enter name of the player - ${playerNo} (${colorName}) : `,
+    );
+    // this.name = String.fromCharCode(charCode++);
     this.tokens = tokens;
     this.initialPos = initialPos;
     this.increment = increment;

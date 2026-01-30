@@ -1,21 +1,22 @@
+import { help } from "./help.js";
+
 const WIN_MESSAGE = `
           __                              __
 \\\\  //  //  \\\\  ||  ||      ||      ||  //  \\\\  ||\\\\   ||
  \\\\//   ||  ||  ||  ||      ||      ||  ||  ||  || \\\\  ||
   ||    ||  ||  ||  ||      || //\\\\ ||  ||  ||  ||  \\\\ ||
   ||    \\\\__//  \\\\__//      \\\\//  \\\\//  \\\\__//  ||   \\\\||
-`
+`;
 
 function createBoard() {
   const topLine = `_______________________________________________________\n`;
-  const nextLine = 
-  `|     |     |     |     |     |     |     |     |     |
+  const nextLine = `|     |     |     |     |     |     |     |     |     |
 |     |     |     |     |     |     |     |     |     |
 |_____|_____|_____|_____|_____|_____|_____|_____|_____|
 `;
-  
+
   const template = topLine + nextLine.repeat(9);
-  const board = template.split('\n');
+  const board = template.split("\n");
   for (let index = 0; index < board.length; index++) {
     board[index] = board[index].split("");
   }
@@ -24,17 +25,38 @@ function createBoard() {
 
 const BOARD = createBoard();
 const GIVEN_HINTS = [
-  [1, 1, 5], [1, 2, 3], [1, 4, 6], [1, 8, 9], [1, 9, 8],
-  [2, 2, 7], [2, 4, 1], [2, 5, 9], [2, 6, 5],
-  [3, 8, 6], 
-  [4, 1, 8], [4, 4, 4], [4, 7, 7],
-  [5, 2, 6], [5, 4, 8], [5, 6, 3], [5, 8, 2],
-  [6, 3, 3], [6, 6, 1], [6, 9, 6], 
+  [1, 1, 5],
+  [1, 2, 3],
+  [1, 4, 6],
+  [1, 8, 9],
+  [1, 9, 8],
+  [2, 2, 7],
+  [2, 4, 1],
+  [2, 5, 9],
+  [2, 6, 5],
+  [3, 8, 6],
+  [4, 1, 8],
+  [4, 4, 4],
+  [4, 7, 7],
+  [5, 2, 6],
+  [5, 4, 8],
+  [5, 6, 3],
+  [5, 8, 2],
+  [6, 3, 3],
+  [6, 6, 1],
+  [6, 9, 6],
   [7, 2, 6],
-  [8, 4, 4], [8, 5, 1], [8, 6, 9], [8, 8, 8],
-  [9, 1, 2], [9, 2, 8], [9, 6, 5], [9, 8, 7], [9, 9, 9]
-]
-const GIVEN_HINTS_INDEX = []
+  [8, 4, 4],
+  [8, 5, 1],
+  [8, 6, 9],
+  [8, 8, 8],
+  [9, 1, 2],
+  [9, 2, 8],
+  [9, 6, 5],
+  [9, 8, 7],
+  [9, 9, 9],
+];
+const GIVEN_HINTS_INDEX = [];
 const USER_INPUTS = [
   [5, 3, 0, 6, 0, 0, 0, 9, 8],
   [0, 7, 0, 1, 9, 5, 0, 0, 0],
@@ -44,8 +66,8 @@ const USER_INPUTS = [
   [0, 0, 3, 0, 0, 1, 0, 0, 6],
   [0, 6, 0, 0, 0, 0, 0, 0, 0],
   [0, 0, 0, 4, 1, 9, 0, 8, 0],
-  [2, 8, 0, 0, 0, 5, 0, 7, 9]
-]
+  [2, 8, 0, 0, 0, 5, 0, 7, 9],
+];
 
 function getFirstIndex(outerBox, innerBox) {
   if ("123".includes(outerBox)) {
@@ -170,9 +192,9 @@ function displayBoard() {
         string += "\x1b[36m" + currentElemnt + "\x1b[0m";
       } else string += "\x1b[38;2;128;128;128m" + currentElemnt + "\x1b[0m";
     }
-    string += '\n';
+    string += "\n";
   }
-  console.log(string)
+  console.log(string);
 }
 
 function markNumber(outerBox, innerBox, number) {
@@ -195,10 +217,10 @@ function isGameFinished() {
   for (let index = 0; index < USER_INPUTS.length; index++) {
     if (USER_INPUTS[index].includes(0)) return false;
   }
-  
+
   for (let index = 0; index < USER_INPUTS.length; index++) {
     if (areMultiple(USER_INPUTS[index])) {
-      console.log("Game Haven't Completed !!")
+      console.log("Game Haven't Completed !!");
       return false;
     }
   }
@@ -206,18 +228,25 @@ function isGameFinished() {
 }
 
 function isInvalid(outerBox, innerBox, number) {
-  if (outerBox > 9 || innerBox > 9 || number > 9
-    || outerBox < 1 || innerBox < 1 || number < 1) return true;
+  if (
+    outerBox > 9 || innerBox > 9 || number > 9 ||
+    outerBox < 1 || innerBox < 1 || number < 1
+  ) return true;
   const row = getFirstIndex(outerBox, innerBox);
   const col = getSecondIndex(outerBox, innerBox);
   for (let index = 0; index < GIVEN_HINTS_INDEX.length; index++) {
-    if ((row === GIVEN_HINTS_INDEX[index][0] &&
-      col === GIVEN_HINTS_INDEX[index][1])) return true;
+    if (
+      (row === GIVEN_HINTS_INDEX[index][0] &&
+        col === GIVEN_HINTS_INDEX[index][1])
+    ) return true;
   }
   return false;
 }
 
-function play() {
+export function suduko() {
+  help();
+  prompt("Hit Enter to start playing >> ");
+  console.clear();
   displayBoard();
   while (!isGameFinished()) {
     // console.log(USER_INPUTS)
@@ -225,15 +254,13 @@ function play() {
     const innerBox = parseInt(prompt("Enter the inner box number (1 - 9) : "));
     const number = parseInt(prompt("Enter the number (1 - 9) : "));
     if (isInvalid(outerBox, innerBox, number)) {
-      console.log("INVALID !!!")
+      console.log("INVALID !!!");
       continue;
     }
     markNumber(outerBox, innerBox, number);
     console.clear();
-    displayBoard()
+    displayBoard();
   }
   console.clear();
   console.log(WIN_MESSAGE);
 }
-
-play()

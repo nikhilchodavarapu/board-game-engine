@@ -123,6 +123,8 @@ const moveToken = (player, tokenNo, noOfMoves, players) => {
 };
 
 const rollDice = async (players, player) => {
+  console.log(`${player.name}'s Turn`);
+  prompt("Hit enter to continue >>");
   const noOfMoves = await roll(board, getCurrentPositions(players));
   // const noOfMoves = +prompt("Enter :");
   console.log("Outcome =>", noOfMoves);
@@ -135,7 +137,6 @@ const rollDice = async (players, player) => {
   } else {
     displayBoard(board, getCurrentPositions(players));
   }
-  prompt("Hit enter to continue >>");
   if (noOfMoves === 6) await rollDice(players, player);
 };
 
