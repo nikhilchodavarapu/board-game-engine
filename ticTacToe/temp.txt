@@ -1,0 +1,12 @@
+indexes of numbers 
+
+rows => 2, 5, 8
+cols => 3, 9, 15
+
+\x1b[31mX\x1b[0m
+
+# Bot 
+If middle is empty => fill it
+If Two moves are in a same => pair fill the third one
+If Others first move is middle => fill a corner
+Try to make a pair

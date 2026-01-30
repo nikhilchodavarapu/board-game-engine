@@ -46,7 +46,7 @@ const initialize = (players) => {
   displayBoard(board, positions);
 };
 
-function findEmptyPlace(row, col) {
+function findEmptyPlace([row, col]) {
   if (board[row][col] === " ") {
     return [row, col];
   }
@@ -79,25 +79,38 @@ const positionInBoard = (position) => {
 };
 
 const changeTokenPosInBoard = (player, tokenNo, newPos) => {
-  const [x, y] = player.tokens[tokenNo].originalPos;
+  const token = player.tokens[tokenNo];
+  const [x, y] = token.originalPos;
   board[x][y] = " ";
-  const [row, col] = positionInBoard(newPos);
-  player.tokens[tokenNo].originalPos = [row, col];
+  const [row, col] = findEmptyPlace(positionInBoard(newPos));
+  token.originalPos = [row, col];
   console.log(newPos);
-  board[row][col] = player.tokens[tokenNo].symbol;
-  player.tokens[tokenNo].moves++;
+  board[row][col] = token.symbol;
+  token.moves++;
+};
+
+const getNextPos = (player, tokenNo) => {
+  const token = player.tokens[tokenNo];
+  if (token.moves >= 52) {
+    console.log(player);
+    const [rowInc, colInc] = player.increment;
+    const [currRow, currCol] = token.visiblePos;
+    token.visiblePos = [currRow + rowInc, currCol + colInc];
+  } else {
+    token.visiblePos = PATH[token.pathIndex++ % 52];
+  }
+  return token.visiblePos;
 };
 
 const moveToken = (player, tokenNo, noOfMoves, players) => {
-  // if ()
-
   let i = 0;
   return new Promise((r) => {
     const intervalId = setInterval(() => {
+      const newPos = getNextPos(player, tokenNo);
       changeTokenPosInBoard(
         player,
         tokenNo,
-        PATH[player.tokens[tokenNo].pathIndex++],
+        newPos,
       );
       displayBoard(board, getCurrentPositions(players));
       i++;
@@ -105,25 +118,39 @@ const moveToken = (player, tokenNo, noOfMoves, players) => {
         clearInterval(intervalId);
         r();
       }
-    }, 500);
+    }, 100);
   });
-  // }
 };
 
 const rollDice = async (players, player) => {
-  // const noOfMoves = await roll(board, getCurrentPositions(players));
-  const noOfMoves = +prompt("Enter :");
+  const noOfMoves = await roll(board, getCurrentPositions(players));
+  // const noOfMoves = +prompt("Enter :");
   console.log("Outcome =>", noOfMoves);
   const tokenNo = prompt("Enter the token No (1:● 2:⬟ 3:▲ 4:■) : ");
-  if (noOfMoves === 6 && player.tokens[tokenNo].moves === 1) {
+  const currentMoves = player.tokens[tokenNo].moves;
+  if (noOfMoves === 6 && currentMoves === 1) {
     await moveToken(player, tokenNo, 1, players);
-  } else {
+  } else if (currentMoves !== 1) {
     await moveToken(player, tokenNo, +noOfMoves, players);
+  } else {
+    displayBoard(board, getCurrentPositions(players));
   }
+  prompt("Hit enter to continue >>");
+  if (noOfMoves === 6) await rollDice(players, player);
+};
+
+const isGameFinished = (player) => {
+  for (const token in player.tokens) {
+    if (player.tokens[token].moves !== 58) return false;
+  }
+  return true;
 };
 
 export const play = async (players) => {
   initialize(players);
-  rollDice(players, players[0]);
-  rollDice(players, players[0]);
+  let i = 0;
+  while (!isGameFinished(players[i])) {
+    await rollDice(players, players[i]);
+    i = ++i % 4;
+  }
 };

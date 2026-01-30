@@ -1,7 +1,7 @@
 export function createBoard(size) {
   const topLine = "_".repeat(6 * size) + "\n";
   const midLine = "│" + "     │".repeat(size) + "\n";
-  const bottomLine = "│" + "_____│".repeat(size) + "\n";
+  const bottomLine = "│" + "▁▁▁▁▁│".repeat(size) + "\n";
   const middleLine = midLine + midLine + bottomLine;
 
   let template = topLine;
